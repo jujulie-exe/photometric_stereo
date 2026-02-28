@@ -8,7 +8,8 @@ PhotometricStereo::PhotometricStereo() : _size(0) {}
 PhotometricStereo::PhotometricStereo(const json &config) {
   this->_imagesGrayScaleNorm_I.clear();
   this->_numLights = config[ConfigKeys::LIGHTS_CONFIGURATION].size();
-  for (size_t i = 0; i <= this->_numLights; ++i) {
+  this->_config = config;
+  for (size_t i = 0; i < this->_numLights; ++i) {
     this->_imagesGrayScale.push_back(cv::imread(
         config[ConfigKeys::LIGHTS_CONFIGURATION][i][ConfigKeys::Lights::FILE],
         cv::IMREAD_GRAYSCALE));
@@ -17,13 +18,16 @@ PhotometricStereo::PhotometricStereo(const json &config) {
   this->_chargeLightDirections();
   this->_chargeLightDirectionsInv();
   this->_computeG();
+  this->_computeGmagnitudeEcludian();
+  this->_computeNormalMap();
 }
 
 void PhotometricStereo::_normalizeImages() {
+  cv::Mat img = cv::Mat::zeros(this->_imagesGrayScale[0].size(), CV_32F);
   for (size_t i = 0; i < this->_numLights; ++i) {
-    cv::normalize(this->_imagesGrayScaleNorm_I[i],
-                  this->_imagesGrayScaleNorm_I[i], 0, 255, cv::NORM_MINMAX,
+    cv::normalize(this->_imagesGrayScale[i], img, 0, 255, cv::NORM_MINMAX,
                   CV_32F);
+    this->_imagesGrayScaleNorm_I.push_back(img.clone());
   }
 }
 
@@ -41,7 +45,7 @@ void PhotometricStereo::_computeG() {
 }
 
 void PhotometricStereo::_computeGmagnitudeEcludian() {
-  cv::Mat somma;
+  cv::Mat somma = cv::Mat::zeros(this->_g[0].size(), CV_32F);
   for (size_t j = 0; j < this->_g.size(); ++j) {
     cv::Mat sq;
     cv::multiply(this->_g[j], this->_g[j], sq);
@@ -52,7 +56,7 @@ void PhotometricStereo::_computeGmagnitudeEcludian() {
 
 void PhotometricStereo::_chargeLightDirections() {
   this->_lightDirections.clear();
-  for (size_t i = 0; i <= this->_numLights; ++i) {
+  for (size_t i = 0; i < this->_numLights; ++i) {
     cv::Mat raw(1, 3, CV_32F);
     raw.at<float>(0) = this->_config[ConfigKeys::LIGHTS_CONFIGURATION][i]
                                     [ConfigKeys::Lights::DIRECTION][0];
