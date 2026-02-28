@@ -10,9 +10,9 @@ FLAGS = -Wall -Wextra -Werror -std=c++17 -g3 $(OPENCV_FLAGS)
 SRCS_DIR = srcs
 OBJS_DIR = objs
 
-SRCS = srcs/main.cpp 
+SRCS = srcs/main.cpp srcs/photometric_stereo.cpp 
 
-INC = -I ./include/
+INC = -I ./include/external/ -I ./include/
 
 OBJS = $(SRCS:$(SRCS_DIR)/%.cpp=$(OBJS_DIR)/%.o)
 DEPS = $(SRCS:$(SRCS_DIR)/%.cpp=$(OBJS_DIR)/%.d)
