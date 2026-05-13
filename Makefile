@@ -10,7 +10,7 @@ FLAGS = -Wall -Wextra -Werror -std=c++17 -g3 $(OPENCV_FLAGS)
 SRCS_DIR = srcs
 OBJS_DIR = objs
 
-SRCS = srcs/main.cpp srcs/photometric_stereo.cpp 
+SRCS = srcs/main.cpp srcs/ClassPhotometricCompute.cpp srcs/ClassPhotometric.cpp
 
 INC = -I ./include/external/ -I ./include/
 

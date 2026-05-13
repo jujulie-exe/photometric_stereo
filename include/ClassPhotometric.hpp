@@ -1,15 +1,9 @@
 #ifndef PHOTOMETRIC_STEREO_HPP
 #define PHOTOMETRIC_STEREO_HPP
 
-#include "external/json.hpp"
-#include "jsonKey.hpp"
-#include <exception>
-#include <fstream>
-#include <iostream>
-#include <opencv2/opencv.hpp>
-#include <set>
-#include <string>
-#include <vector>
+#include "Depencies.hpp"
+#include "WrapperPhotometricResult.hpp"
+
 using json = nlohmann::json;
 /*♡♡♡♡♡♡♡♡♡♡♡COSA FARE♡♡♡♡♡♡♡♡♡♡♡♡♡
  * prende il path della foto 8 foto  quindi un array di path  lo legge con
@@ -24,6 +18,9 @@ using json = nlohmann::json;
  *
  */
 class PhotometricStereo {
+  /*
+   * ORCHESTRATOR
+   */
 
 public:
   enum visualizeFlags {
@@ -35,12 +32,14 @@ public:
   /*♡♡♡♡♡♡♡♡♡♡♡CTOR♡♡♡♡♡♡♡♡♡♡♡♡♡*/
   PhotometricStereo(const json &config);
   PhotometricStereo(PhotometricStereo const &src) = delete;
-  void visualizeImage(visualizeFlags flags);
+  PhotometricStereo() = delete;
 
   /*♡♡♡♡♡♡♡♡♡♡♡GETTER♡♡♡♡♡♡♡♡♡♡♡♡♡*/
   // Esempio: cv::Mat getNormalMap() const;
+  PhotometricResult getResult() const;
 
   /*♡♡♡♡♡♡♡♡♡♡♡FT♡♡♡♡♡♡♡♡♡♡♡♡♡*/
+  void run();
   // Esempio: void compute();
 
   /*♡♡♡♡♡♡♡♡♡♡♡OPERATOR♡♡♡♡♡♡♡♡♡♡♡♡♡*/
@@ -50,31 +49,47 @@ public:
   virtual ~PhotometricStereo();
 
 private:
+  namespace PhotometricLoad {
+  static std::vector<cv::Mat> loadImagesGreyScale(const json &config,
+                                                  size_t nbrLights);
+  static std::vector<cv::Mat> chargeLightDirections(size_t lights,
+                                                    const json &config);
+  static std::vector<cv::Mat> loadImagesRGB(const json &config,
+                                            size_t nbrLights);
+  }; // namespace PhotometricLoad
+  class PhotometricCompute {
+
+  public:
+    PhotometricCompute();
+    ~PhotometricCompute();
+    void computeNormalMap();
+    void computeAlbedo();
+    void computeGradient();
+
+  private:
+    // TODO funzione di trasformaione da RGB a GreyScale
+    std::vector<cv::Mat>
+    _normalizeImages(cv::Size sizeArray, size_t lights,
+                     const std::vector<cv::Mat> imagesGrayScale);
+    std::vector<cv::Mat>
+    _computeLightDirectionsInv(size_t lights,
+                               const std::vector<cv::Mat> &lightDirections);
+    std::vector<cv::Mat>
+    _computeG(cv::Size sizeArray, size_t lights,
+              const std::vector<cv::Mat> imagesGrayScaleNorm_I,
+              const std::vector<cv::Mat> lightDirectionsInv);
+    cv::Mat _computeGmagnitudeEcludian(const std::vector<cv::Mat> &g);
+    cv::Mat _computeNormalMap(cv::Size sizeArray, const std::vector<cv::Mat> &g,
+                              const cv::Mat &gMagnitudes);
+  };
   /*♡♡♡♡♡♡♡♡♡♡♡CTOR♡♡♡♡♡♡♡♡♡♡♡♡♡*/
-  PhotometricStereo();
-  void _grayScale();
-  void _chargeLightDirections();
-  void _chargeLightDirectionsInv();
-  void _computeG();
-  void _computeGmagnitudeEcludian();
-  void _normalizeImages();
-  void _computeNormalMap();
-  cv::Mat _preProcessForVisualization(visualizeFlags flags);
 
   /*♡♡♡♡♡♡♡♡♡♡♡VARIABLE♡♡♡♡♡♡♡♡♡♡♡♡♡*/
   unsigned int _size;
-  std::vector<int> _VecInt;
-  std::vector<cv::Mat> _imagesGrayScale;
-
-  std::vector<cv::Mat> _imagesGrayScaleNorm_I;
-  std::vector<cv::Mat> _lightDirections;
-  std::vector<cv::Mat> _lightDirectionsInv;
   size_t _numLights;
-  std::vector<cv::Mat> _g;
-  cv::Mat _gMagnitudes;
-  cv::Mat _albedo;
-  cv::Mat _normalMap;
   json _config;
+  PhotometricCompute _compute;
+  PhotometricResult _result;
 
   /*♡♡♡♡♡♡♡♡♡♡♡FT♡♡♡♡♡♡♡♡♡♡♡♡♡*/
 
