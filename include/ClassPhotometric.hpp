@@ -49,13 +49,13 @@ public:
   virtual ~PhotometricStereo();
 
 private:
-  namespace PhotometricLoad {
-  static std::vector<cv::Mat> loadImagesGreyScale(const json &config,
-                                                  size_t nbrLights);
-  static std::vector<cv::Mat> chargeLightDirections(size_t lights,
-                                                    const json &config);
-  static std::vector<cv::Mat> loadImagesRGB(const json &config,
-                                            size_t nbrLights);
+  struct PhotometricLoad {
+    static std::vector<cv::Mat> loadImagesGreyScale(const json &config,
+                                                    size_t nbrLights);
+    static std::vector<cv::Mat> chargeLightDirections(size_t lights,
+                                                      const json &config);
+    static std::vector<cv::Mat> loadImagesRGB(const json &config,
+                                              size_t nbrLights);
   }; // namespace PhotometricLoad
   class PhotometricCompute {
 

@@ -1,7 +1,8 @@
 #include "ClassPhotometric.hpp"
 
-std::vector<cv::Mat> PhotometricLoad::loadImagesGreyScale(const json &config,
-                                                          size_t nbrLights) {
+std::vector<cv::Mat>
+PhotometricStereo::PhotometricLoad::loadImagesGreyScale(const json &config,
+                                                        size_t nbrLights) {
   std::vector<cv::Mat> imagesGrayScale;
   for (size_t i = 0; i < nbrLights; ++i) {
     imagesGrayScale.push_back(cv::imread(
@@ -11,8 +12,9 @@ std::vector<cv::Mat> PhotometricLoad::loadImagesGreyScale(const json &config,
   return imagesGrayScale;
 }
 
-std::vector<cv::Mat> PhotometricLoad::loadImagesRGB(const json &config,
-                                                    size_t nbrLights) {
+std::vector<cv::Mat>
+PhotometricStereo::PhotometricLoad::loadImagesRGB(const json &config,
+                                                  size_t nbrLights) {
   std::vector<cv::Mat> imagesRGB;
   for (size_t i = 0; i < nbrLights; ++i) {
     imagesRGB.push_back(cv::imread(
@@ -23,7 +25,8 @@ std::vector<cv::Mat> PhotometricLoad::loadImagesRGB(const json &config,
 }
 
 std::vector<cv::Mat>
-PhotometricLoad::chargeLightDirections(size_t lights, const json &config) {
+PhotometricStereo::PhotometricLoad::chargeLightDirections(size_t lights,
+                                                          const json &config) {
   std::vector<cv::Mat> lightDirections;
   for (size_t i = 0; i < lights; ++i) {
     cv::Mat raw(1, 3, CV_32F);

@@ -115,6 +115,9 @@ PhotometricStereo::PhotometricCompute::_computeLightDirectionsInv(
   }
   return lightDirectionsInv;
 }
+void PhotometricStereo::PhotometricCompute::computeAlbedo() {}
+void PhotometricStereo::PhotometricCompute::computeGradient() {}
+void PhotometricStereo::PhotometricCompute::computeNormalMap() {}
 
 /*♡♡♡♡♡♡♡♡♡♡♡OPERATOR♡♡♡♡♡♡♡♡♡♡♡♡♡*/
 
