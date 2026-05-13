@@ -8,7 +8,8 @@ int main() {
   json data;
   try {
     data = json::parse(f, nullptr, true);
-    PhotometricStereo ps(data);
+    PhotometricStereo ps = PhotometricStereo();
+    ps.run(data);
     // ps.visualizeImage(PhotometricStereo::ALBEDO);
     // ps.visualizeImage(PhotometricStereo::NORMAL_MAP);
     // ps.visualizeImage(PhotometricStereo::GRADIENT);

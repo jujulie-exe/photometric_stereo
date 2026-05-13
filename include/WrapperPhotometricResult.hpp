@@ -19,7 +19,6 @@ private:
   const std::vector<cv::Mat> _lightDirections;
   const std::vector<cv::Mat> _lightDirectionsInv;
   const std::vector<cv::Mat> _imagesGrayScale;
-  const size_t _numLights;
   const json _config;
 };
 

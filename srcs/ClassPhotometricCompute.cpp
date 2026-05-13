@@ -7,27 +7,6 @@
 
 PhotometricStereo::PhotometricCompute::PhotometricCompute() {}
 
-// std::tuple<std::vector<cv::Mat>, std::vector<cv::Mat>, std::vector<cv::Mat>>
-// Photometricstereo::loadImagesDivideChannelsRGB(const json &config) {
-//   std::vector<cv::Mat> imagesGrayScaleChannel_1;
-//   std::vector<cv::Mat> imagesGrayScaleChannel_2;
-//   std::vector<cv::Mat> imagesGrayScaleChannel_3;
-//   for (size_t i = 0; i < config[ConfigKeys::LIGHTS_CONFIGURATION].size();
-//   ++i) {
-//     cv::Mat img = cv::imread(
-//         config[ConfigKeys::LIGHTS_CONFIGURATION][i][ConfigKeys::Lights::FILE],
-//         cv::IMREAD_COLOR);
-//     std::vector<cv::Mat> channels;
-//     cv::split(img, channels);
-//     imagesGrayScaleChannel_1.push_back(channels[0]);
-//     imagesGrayScaleChannel_2.push_back(channels[1]);
-//     imagesGrayScaleChannel_3.push_back(channels[2]);
-//   }
-//   return std::make_tuple(imagesGrayScaleChannel_1, imagesGrayScaleChannel_2,
-//                          imagesGrayScaleChannel_3);
-// }
-//
-
 std::vector<cv::Mat> PhotometricStereo::PhotometricCompute::_normalizeImages(
     cv::Size sizeArray, size_t lights,
     const std::vector<cv::Mat> imagesGrayScale) {
@@ -115,9 +94,34 @@ PhotometricStereo::PhotometricCompute::_computeLightDirectionsInv(
   }
   return lightDirectionsInv;
 }
-void PhotometricStereo::PhotometricCompute::computeAlbedo() {}
-void PhotometricStereo::PhotometricCompute::computeGradient() {}
-void PhotometricStereo::PhotometricCompute::computeNormalMap() {}
+void PhotometricStereo::PhotometricCompute::computeAlbedoGreyScale() {}
+void PhotometricStereo::PhotometricCompute::computeAlbedoColor() {}
+
+std::vector<cv::Mat> PhotometricStereo::PhotometricCompute::computeG(
+    const std::vector<cv::Mat> &imagesGrayScale,
+    const std::vector<cv::Mat> &lightDirections) {
+  cv::Size sizeArray = imagesGrayScale[0].size();
+  size_t lights = imagesGrayScale.size();
+  std::vector<cv::Mat> imagesGrayScaleNorm_I =
+      this->_normalizeImages(sizeArray, lights, imagesGrayScale);
+  std::vector<cv::Mat> lightDirectionsInv =
+      this->_computeLightDirectionsInv(lights, lightDirections);
+  std::vector<cv::Mat> g = this->_computeG(
+      sizeArray, lights, imagesGrayScaleNorm_I, lightDirectionsInv);
+  return g;
+}
+
+cv::Mat PhotometricStereo::PhotometricCompute::computeGMagnitudes(
+    const std::vector<cv::Mat> &g) {
+  cv::Mat gMagnitudes = this->_computeGmagnitudeEcludian(g);
+  return gMagnitudes;
+}
+
+void PhotometricStereo::PhotometricCompute::computeNormalMap(
+    const std::vector<cv::Mat> &g, const cv::Mat &gMagnitudes) {
+  cv::Mat normalMap =
+      this->_computeNormalMap(gMagnitudes.size(), g, gMagnitudes);
+}
 
 /*♡♡♡♡♡♡♡♡♡♡♡OPERATOR♡♡♡♡♡♡♡♡♡♡♡♡♡*/
 

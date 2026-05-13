@@ -2,7 +2,6 @@
 #define PHOTOMETRIC_STEREO_HPP
 
 #include "Depencies.hpp"
-#include "WrapperPhotometricResult.hpp"
 
 using json = nlohmann::json;
 /*♡♡♡♡♡♡♡♡♡♡♡COSA FARE♡♡♡♡♡♡♡♡♡♡♡♡♡
@@ -30,16 +29,14 @@ public:
   };
 
   /*♡♡♡♡♡♡♡♡♡♡♡CTOR♡♡♡♡♡♡♡♡♡♡♡♡♡*/
-  PhotometricStereo(const json &config);
+  PhotometricStereo();
   PhotometricStereo(PhotometricStereo const &src) = delete;
-  PhotometricStereo() = delete;
 
   /*♡♡♡♡♡♡♡♡♡♡♡GETTER♡♡♡♡♡♡♡♡♡♡♡♡♡*/
   // Esempio: cv::Mat getNormalMap() const;
-  PhotometricResult getResult() const;
 
   /*♡♡♡♡♡♡♡♡♡♡♡FT♡♡♡♡♡♡♡♡♡♡♡♡♡*/
-  void run();
+  void run(const json &config);
   // Esempio: void compute();
 
   /*♡♡♡♡♡♡♡♡♡♡♡OPERATOR♡♡♡♡♡♡♡♡♡♡♡♡♡*/
@@ -56,15 +53,27 @@ private:
                                                       const json &config);
     static std::vector<cv::Mat> loadImagesRGB(const json &config,
                                               size_t nbrLights);
-  }; // namespace PhotometricLoad
+    static std::vector<std::vector<cv::Mat>>
+    loadImagesSplitRGB(const json &config);
+  };
+
+  struct Transform {
+    static std::vector<cv::Mat>
+    RGBtoGreyScale(const std::vector<cv::Mat> &imagesRGB);
+  };
+
   class PhotometricCompute {
 
   public:
     PhotometricCompute();
     ~PhotometricCompute();
-    void computeNormalMap();
-    void computeAlbedo();
-    void computeGradient();
+    void computeNormalMap(const std::vector<cv::Mat> &g,
+                          const cv::Mat &gMagnitudes);
+    void computeAlbedoGreyScale();
+    void computeAlbedoColor();
+    cv::Mat computeGMagnitudes(const std::vector<cv::Mat> &g);
+    std::vector<cv::Mat> computeG(const std::vector<cv::Mat> &imagesGrayScale,
+                                  const std::vector<cv::Mat> &lightDirections);
 
   private:
     // TODO funzione di trasformaione da RGB a GreyScale
@@ -89,7 +98,6 @@ private:
   size_t _numLights;
   json _config;
   PhotometricCompute _compute;
-  PhotometricResult _result;
 
   /*♡♡♡♡♡♡♡♡♡♡♡FT♡♡♡♡♡♡♡♡♡♡♡♡♡*/
 
