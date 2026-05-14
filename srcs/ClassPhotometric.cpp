@@ -9,7 +9,7 @@ PhotometricStereo::PhotometricStereo() {}
 
 /*♡♡♡♡♡♡♡♡♡♡♡GETTER♡♡♡♡♡♡♡♡♡♡♡♡♡*/
 
-const PhotometricResult &PhotometricStereo::run(const json &config) {
+const PhotometricResult PhotometricStereo::run(const json &config) {
   // load
   const std::vector<cv::Mat> imagesRGB =
       PhotometricStereo::PhotometricLoad::loadImagesRGB(
@@ -48,8 +48,8 @@ const PhotometricResult &PhotometricStereo::run(const json &config) {
   cv::normalize(gMagnitudes[2], toShowB, 0, 255, cv::NORM_MINMAX, CV_8U);
   cv::merge(std::vector<cv::Mat>{toShowR, toShowG, toShowB}, toShow);
 
-  return *(new PhotometricResult(gMagnitudes, gS, gNMag, gN,
-                                 (normalMap + 1) / 2, toShow));
+  return PhotometricResult(gMagnitudes, gS, gNMag, gN, (normalMap + 1) / 2,
+                           toShow);
 }
 
 /*♡♡♡♡♡♡♡♡♡♡♡FT♡♡♡♡♡♡♡♡♡♡♡♡♡*/

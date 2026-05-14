@@ -37,7 +37,7 @@ public:
   // Esempio: cv::Mat getNormalMap() const;
 
   /*♡♡♡♡♡♡♡♡♡♡♡FT♡♡♡♡♡♡♡♡♡♡♡♡♡*/
-  const PhotometricResult &run(const json &config);
+  const PhotometricResult run(const json &config);
   // Esempio: void compute();
 
   /*♡♡♡♡♡♡♡♡♡♡♡OPERATOR♡♡♡♡♡♡♡♡♡♡♡♡♡*/
