@@ -1,4 +1,5 @@
 #include "ClassPhotometric.hpp"
+#include "opencv2/imgcodecs.hpp"
 
 std::vector<cv::Mat>
 PhotometricStereo::PhotometricLoad::loadImagesGreyScale(const json &config,

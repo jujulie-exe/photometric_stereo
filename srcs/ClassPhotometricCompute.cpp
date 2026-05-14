@@ -117,10 +117,11 @@ cv::Mat PhotometricStereo::PhotometricCompute::computeGMagnitudes(
   return gMagnitudes;
 }
 
-void PhotometricStereo::PhotometricCompute::computeNormalMap(
+cv::Mat PhotometricStereo::PhotometricCompute::computeNormalMap(
     const std::vector<cv::Mat> &g, const cv::Mat &gMagnitudes) {
   cv::Mat normalMap =
       this->_computeNormalMap(gMagnitudes.size(), g, gMagnitudes);
+  return normalMap;
 }
 
 /*♡♡♡♡♡♡♡♡♡♡♡OPERATOR♡♡♡♡♡♡♡♡♡♡♡♡♡*/

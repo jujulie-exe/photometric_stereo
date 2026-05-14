@@ -1,7 +1,8 @@
 #ifndef PHOTOMETRIC_STEREO_HPP
 #define PHOTOMETRIC_STEREO_HPP
-
 #include "Depencies.hpp"
+
+#include "WrapperPhotometricResult.hpp"
 
 using json = nlohmann::json;
 /*♡♡♡♡♡♡♡♡♡♡♡COSA FARE♡♡♡♡♡♡♡♡♡♡♡♡♡
@@ -36,7 +37,7 @@ public:
   // Esempio: cv::Mat getNormalMap() const;
 
   /*♡♡♡♡♡♡♡♡♡♡♡FT♡♡♡♡♡♡♡♡♡♡♡♡♡*/
-  void run(const json &config);
+  const PhotometricResult &run(const json &config);
   // Esempio: void compute();
 
   /*♡♡♡♡♡♡♡♡♡♡♡OPERATOR♡♡♡♡♡♡♡♡♡♡♡♡♡*/
@@ -60,6 +61,8 @@ private:
   struct Transform {
     static std::vector<cv::Mat>
     RGBtoGreyScale(const std::vector<cv::Mat> &imagesRGB);
+    static std::vector<std::vector<cv::Mat>>
+    splitter(const std::vector<cv::Mat> &imagesRGB);
   };
 
   class PhotometricCompute {
@@ -67,8 +70,8 @@ private:
   public:
     PhotometricCompute();
     ~PhotometricCompute();
-    void computeNormalMap(const std::vector<cv::Mat> &g,
-                          const cv::Mat &gMagnitudes);
+    cv::Mat computeNormalMap(const std::vector<cv::Mat> &g,
+                             const cv::Mat &gMagnitudes);
     void computeAlbedoGreyScale();
     void computeAlbedoColor();
     cv::Mat computeGMagnitudes(const std::vector<cv::Mat> &g);

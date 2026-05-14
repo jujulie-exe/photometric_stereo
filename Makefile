@@ -15,7 +15,8 @@ SRCS = srcs/main.cpp \
        srcs/ClassPhotometric.cpp \
        srcs/WrapperPhotometricResult.cpp \
        srcs/StructTransorm.cpp \
-       srcs/StructPhotometricLoad.cpp
+       srcs/StructPhotometricLoad.cpp \
+       srcs/ClassService.cpp
 
 INC = -I ./include/external/ -I ./include/
 
