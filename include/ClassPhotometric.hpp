@@ -47,6 +47,8 @@ public:
   virtual ~PhotometricStereo();
 
 private:
+  const std::vector<cv::Mat>_pipelineMultiChannelsMagnitudes(const std::vector<std::vector<cv::Mat>> imagesChannels, const std::vector<cv::Mat> lightDirections); 
+  const cv::Mat _pipelineAlbedo(const std::vector<cv::Mat> gMagnitudes) const;
   struct PhotometricLoad {
     static std::vector<cv::Mat> loadImagesGreyScale(const json &config,
                                                     size_t nbrLights);
@@ -93,6 +95,7 @@ private:
     cv::Mat _computeGmagnitudeEcludian(const std::vector<cv::Mat> &g);
     cv::Mat _computeNormalMap(cv::Size sizeArray, const std::vector<cv::Mat> &g,
                               const cv::Mat &gMagnitudes);
+
   };
   /*♡♡♡♡♡♡♡♡♡♡♡CTOR♡♡♡♡♡♡♡♡♡♡♡♡♡*/
 
